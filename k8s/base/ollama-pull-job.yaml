@@ -1,0 +1,33 @@
+# Run this AFTER the ollama Deployment is Ready:
+#   kubectl wait --for=condition=available deployment/ollama -n agentic-rag --timeout=300s
+#   kubectl apply -f k8s/base/ollama-pull-job.yaml
+#   kubectl wait --for=condition=complete job/ollama-pull -n agentic-rag --timeout=1800s
+#
+# Safe to re-run (ollama pull is a no-op if the model is already present) — but the
+# Job name is fixed, so delete the old Job first: kubectl delete job ollama-pull -n agentic-rag
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ollama-pull
+  namespace: agentic-rag
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: ollama-pull
+          image: ollama/ollama:latest
+          env:
+            - name: OLLAMA_HOST
+              value: "http://ollama:11434"
+            - name: GENERATOR_MODEL
+              valueFrom: { configMapKeyRef: { name: rag-config, key: GENERATOR_MODEL } }
+            - name: EMBED_MODEL
+              valueFrom: { configMapKeyRef: { name: rag-config, key: EMBED_MODEL } }
+          command: ["/bin/sh", "-c"]
+          args:
+            - >
+              ollama pull "$EMBED_MODEL" &&
+              ollama pull "$GENERATOR_MODEL" &&
+              echo "All models pulled."

@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rag-config
+  namespace: agentic-rag
+data:
+  OLLAMA_BASE_URL: "http://ollama:11434"
+  QDRANT_URL: "http://qdrant:6333"
+  REDIS_URL: "redis://redis:6379/0"
+  S3_ENDPOINT: "minio:9000"
+  S3_BUCKET: "documents"
+  S3_SECURE: "false"
+  GENERATOR_MODEL: "gemma3:12b"
+  CRITIC_MODEL: "gemma3:12b"
+  ROUTER_MODEL: "qwen3:1.7b"
+  EMBED_MODEL: "nomic-embed-text"
+  EMBED_DIM: "768"
+  TOP_K: "6"
+  MAX_ITERATIONS: "3"
+  CHUNK_SIZE: "800"
+  CHUNK_OVERLAP: "120"

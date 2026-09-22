@@ -1,0 +1,19 @@
+# The ollama-pull-job.yaml Job is intentionally NOT listed here — it must run only
+# after the ollama Deployment is ready, so it's applied as a separate, later step.
+# See ollama-pull-job.yaml's header comment and the README for the exact commands.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: agentic-rag
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secret.yaml
+  - postgres.yaml
+  - redis.yaml
+  - minio.yaml
+  - qdrant.yaml
+  - ollama.yaml
+  - api.yaml
+  - worker.yaml

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Local Agentic RAG</title>
+<link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <h1>📚 Agentic RAG</h1>
+
+      <div class="upload-box" id="dropZone">
+        <p>Drop a PDF/TXT/MD here or</p>
+        <input type="file" id="fileInput" accept=".pdf,.txt,.md" />
+        <div id="uploadStatus"></div>
+      </div>
+
+      <h2>Documents</h2>
+      <ul id="docList" class="doc-list"></ul>
+    </aside>
+
+    <main class="chat">
+      <div id="messages" class="messages"></div>
+
+      <form id="chatForm" class="chat-form">
+        <input id="chatInput" type="text" placeholder="Ask something about your documents..." autocomplete="off" />
+        <button type="submit">Send</button>
+      </form>
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

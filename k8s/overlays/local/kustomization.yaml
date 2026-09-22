@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+patches:
+  # A single dev machine rarely benefits from 2 ingestion workers competing for
+  # the same CPU/RAM as everything else — drop to 1 replica locally.
+  - target:
+      kind: Deployment
+      name: worker
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 1
