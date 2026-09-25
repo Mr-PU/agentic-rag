@@ -264,3 +264,41 @@ agentic-rag/
   on a registry. `scripts/k8s_deploy.sh` does this for you.
 - **No GPU**: everything works on CPU, just slower. See the GPU sections in
   `docker-compose.yml` / `k8s/base/ollama.yaml`.
+- **Containers cannot reach Ollama (`Connection refused` on `/api/embeddings` or `/api/chat`)**:
+  By default, `ollama serve` binds only to `127.0.0.1:11434` on the host, which is reachable
+  from your terminal (`ollama list` works) but **not** from inside a Docker container, even
+  via `host.docker.internal`. You must tell Ollama to listen on all interfaces.
+  
+  **Fix (native Linux install via systemd):**
+  
+  ```bash
+  sudo systemctl edit ollama
+  ```
+  
+  This opens an editor for an override file — add:
+  
+  ```ini
+  [Service]
+  Environment="OLLAMA_HOST=0.0.0.0:11434"
+  ```
+  
+  Save and quit, then:
+  
+  ```bash
+  sudo systemctl daemon-reload
+  sudo systemctl restart ollama
+  ```
+  
+  Verify it worked — from your host:
+  
+  ```bash
+  curl http://localhost:11434/api/tags   # should still work
+  ```
+  
+  Then from inside the container (this is the real test):
+  
+  ```bash
+  docker compose exec api curl -sf http://host.docker.internal:11434/api/tags && echo "reachable"
+  ```
+  
+  If that second curl succeeds, retry your chat request — it should work now.
